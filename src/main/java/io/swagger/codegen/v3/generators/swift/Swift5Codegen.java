@@ -669,6 +669,13 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             return "_" + startingNumbers + camelize(nameWithoutStartingNumbers, true);
         }
 
+        if (name.startsWith("+")) {
+            name = name.replaceFirst("\\+", getSymbolName("+") + "_");
+        }
+        if (name.startsWith("-")) {
+            name = name.replaceFirst("-", getSymbolName("-") + "_");
+        }
+
         // for symbol, e.g. $, #
         if (getSymbolName(name) != null) {
             return camelize(WordUtils.capitalizeFully(getSymbolName(name).toUpperCase()), true);
@@ -703,9 +710,9 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             return name;
         }
 
-        char[] separators = {'-', '_', ' ', ':', '(', ')'};
+        char[] separators = {'-', '_', ' ', ':', '(', ')', '\'', ','};
         return camelize(WordUtils.capitalizeFully(StringUtils.lowerCase(name), separators)
-                .replaceAll("[-_ :()]", ""),
+                .replaceAll("[-_ :()',]", ""),
             true);
     }
 
