@@ -306,9 +306,9 @@ public class Swift5Codegen extends DefaultCodegenConfig {
 
         setLenientTypeCast(convertPropertyToBooleanAndWriteBack(LENIENT_TYPE_CAST));
 
-        supportingFiles.add(new SupportingFile("Podspec.mustache",
-            "",
-            projectName + ".podspec"));
+        // supportingFiles.add(new SupportingFile("Podspec.mustache",
+        //     "",
+        //     projectName + ".podspec"));
         supportingFiles.add(new SupportingFile("Cartfile.mustache",
             "",
             "Cartfile"));
@@ -342,12 +342,12 @@ public class Swift5Codegen extends DefaultCodegenConfig {
         supportingFiles.add(new SupportingFile("JSONValue.mustache",
             sourceFolder,
             "JSONValue.swift"));
-        supportingFiles.add(new SupportingFile("git_push.sh.mustache",
-            "",
-            "git_push.sh"));
-        supportingFiles.add(new SupportingFile("gitignore.mustache",
-            "",
-            ".gitignore"));
+        // supportingFiles.add(new SupportingFile("git_push.sh.mustache",
+        //     "",
+        //     "git_push.sh"));
+        // supportingFiles.add(new SupportingFile("gitignore.mustache",
+        //     "",
+        //     ".gitignore"));
 
         copyFistAllOfProperties = true;
 
@@ -710,10 +710,13 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             return name;
         }
 
+        if (isAllUpper(name)) {
+            name = StringUtils.lowerCase(name); 
+        }
         char[] separators = {'-', '_', ' ', ':', '(', ')', '\'', ','};
-        return camelize(WordUtils.capitalizeFully(StringUtils.lowerCase(name), separators)
-                .replaceAll("[-_ :()',]", ""),
-            true);
+        String result = WordUtils.capitalize(name, separators)
+                .replaceAll("[-_ :()',]", "");
+        return camelize(result, true);
     }
 
     @Override
@@ -859,5 +862,27 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             codegenModel.vars = codegenProperties;
         }
     }
-}
 
+    // String captializeAllFirstLetter(String name) {
+    //     char[] array = name.toCharArray();
+    //     array[0] = Character.toUpperCase(array[0]);
+
+    //     for (int i = 1; i < array.length; i++) {
+    //         if (Character.isWhitespace(array[i - 1])) {
+    //             array[i] = Character.toUpperCase(array[i]);
+    //         }
+    //     }
+
+    //     return new String(array);
+    // }
+
+    boolean isAllUpper(String s) {
+        for(char c : s.toCharArray()) {
+            if(Character.isLetter(c) && Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+}

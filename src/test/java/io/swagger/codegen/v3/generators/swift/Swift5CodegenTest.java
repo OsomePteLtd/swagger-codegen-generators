@@ -34,4 +34,17 @@ public class Swift5CodegenTest {
         Assert.assertEquals(swiftCodegen.toEnumVarName("random 'special' symbols", null), "randomSpecialSymbols");
     }
 
+    @Test
+    public void testNameKeepsOriginalCamelize() {
+        // for some reason original implementation makes all cases lowercased ('createdAt' -> 'createdat'), i've disabled this behavior
+        Assert.assertEquals(swiftCodegen.toEnumVarName("createdAt", null), "createdAt");
+        Assert.assertEquals(swiftCodegen.toEnumVarName("CreatedAt", null), "createdAt");
+
+        Assert.assertEquals(swiftCodegen.toEnumVarName("createdAt-newWord", null), "createdAtNewWord");
+
+        Assert.assertEquals(swiftCodegen.toEnumVarName("RECEIVEOVERPAYMENT", null), "receiveoverpayment");
+        Assert.assertEquals(swiftCodegen.toEnumVarName("RECEIVE-OVER-PAYMENT", null), "receiveOverPayment");
+        
+    }
+
 }
