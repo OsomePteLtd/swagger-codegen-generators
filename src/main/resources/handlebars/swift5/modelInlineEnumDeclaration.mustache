@@ -1,3 +1,5 @@
-    public enum {{enumName}}: {{^isContainer}}{{datatype}}{{/isContainer}}{{#isContainer}}String{{/isContainer}}, Codable { {{#allowableValues}}{{#enumVars}}
+    public enum {{enumName}}: {{^isContainer}}{{datatype}}{{/isContainer}}{{#isContainer}}String{{/isContainer}}, Codable, CaseIterableDefaultsLast { {{#allowableValues}}{{#enumVars}}
         case {{name}} = {{#isContainer}}"{{/isContainer}}{{#isString}}"{{/isString}}{{{value}}}{{#isString}}"{{/isString}}{{#isContainer}}"{{/isContainer}}{{/enumVars}}{{/allowableValues}}
+        /// non-existing / unparsed case
+        case _unknown = "_unknown"
     }
