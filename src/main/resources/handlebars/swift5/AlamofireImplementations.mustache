@@ -154,7 +154,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
 
                 do {
 
-                    guard case Result.success(let value) = dataResponse.result else {
+                    guard case Result.success(_) = dataResponse.result else {
                         throw DownloadException.responseFailed
                     }
 
@@ -364,7 +364,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                         ErrorResponse.error(voidResponse.response?.statusCode ?? 500, voidResponse.data, error)
                     )
                     return
-                case Result.success(let value):
+                case Result.success(_):
                     completion(
                         Response(
                             response: voidResponse.response!,
@@ -384,7 +384,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                         ErrorResponse.error(dataResponse.response?.statusCode ?? 500, dataResponse.data, error)
                     )
                     return
-                case Result.success(let value):
+                case Result.success(_):
                     completion(
                         Response(
                             response: dataResponse.response!,
