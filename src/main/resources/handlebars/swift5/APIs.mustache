@@ -4,7 +4,8 @@
 // https://github.com/swagger-api/swagger-codegen
 //
 
-import Foundation
+import Foundation{{#useRxSwift}}
+import RxSwift{{/useRxSwift}}
 
 public final class {{projectName}}API {
     public static var basePath = "{{{basePath}}}"
@@ -53,6 +54,21 @@ open class RequestBuilder<T> {
         self.credential = {{projectName}}API.credential
         return self
     }
+    
+    {{#useRxSwift}}
+    public func rx_execute() -> Single<T> {
+        return Single.create { single -> Disposable in
+            self.execute { (response, error) -> Void in
+                if let error = error {
+                    single(.failure(error as Error))
+                } else {
+                    single(.success(response!.body!))
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    {{/useRxSwift}}
 }
 
 public protocol RequestBuilderFactory {
