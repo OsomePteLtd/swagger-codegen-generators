@@ -111,7 +111,23 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
         }
         */
         let request = makeRequest(session: session, method: xMethod, encoding: encoding, headers: headers)
-        processRequest(request: request, sessionId, completion)
+        processRequest(request: request, sessionId, wrapCompletion(completion))
+    }
+    
+    /**
+     * wrapping completion Handler with global error handler 
+     */
+    fileprivate func wrapCompletion(_ completion: @escaping (_ response: Response<T>?, _ error: Error?) -> Void) -> (_ response: Response<T>?, _ error: Error?) -> Void {
+        return { response, error in
+            guard let handler = SwaggerClientAPI.globalErrorHandler,
+                let networkErr = error as? ErrorResponse,
+                case let .error(_, data, err, httpResponse) = networkErr else {
+                completion(response, error)
+                return;
+            }
+            let handlerError = handler(err, data, httpResponse)
+            completion(response, handlerError)
+        }
     }
 
     fileprivate func processRequest(request: DataRequest, _ sessionId: String, _ completion: @escaping (_ response: Response<T>?, _ error: Error?) -> Void) {
@@ -136,7 +152,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 case Result.failure(let error):
                     completion(
                         nil,
-                        ErrorResponse.error(stringResponse.response?.statusCode ?? 500, stringResponse.data, error)
+                        ErrorResponse.error(stringResponse.response?.statusCode ?? 500, stringResponse.data, error, stringResponse.response)
                     )
                 case Result.success(let value):
                     completion(
@@ -192,9 +208,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                     )
 
                 } catch let requestParserError as DownloadException {
-                    completion(nil, ErrorResponse.error(400, dataResponse.data, requestParserError))
+                    completion(nil, ErrorResponse.error(400, dataResponse.data, requestParserError, dataResponse.response))
                 } catch let error {
-                    completion(nil, ErrorResponse.error(400, dataResponse.data, error))
+                    completion(nil, ErrorResponse.error(400, dataResponse.data, error, dataResponse.response))
                 }
                 return
             })
@@ -205,7 +221,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 if case Result.failure(let error) = voidResponse.result {
                     completion(
                         nil,
-                        ErrorResponse.error(voidResponse.response?.statusCode ?? 500, voidResponse.data, error)
+                        ErrorResponse.error(voidResponse.response?.statusCode ?? 500, voidResponse.data, error, voidResponse.response)
                     )
                     return
                 }
@@ -224,7 +240,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 if case Result.failure(let error) = dataResponse.result {
                     completion(
                         nil,
-                        ErrorResponse.error(dataResponse.response?.statusCode ?? 500, dataResponse.data, error)
+                        ErrorResponse.error(dataResponse.response?.statusCode ?? 500, dataResponse.data, error, dataResponse.response)
                     )
                     return
                 }
@@ -340,7 +356,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 case Result.failure(let error):
                     completion(
                         nil,
-                        ErrorResponse.error(stringResponse.response?.statusCode ?? 500, stringResponse.data, error)
+                        ErrorResponse.error(stringResponse.response?.statusCode ?? 500, stringResponse.data, error, stringResponse.response)
                     )
                     return
                 case Result.success(let value):
@@ -361,7 +377,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 case Result.failure(let error):
                     completion(
                         nil,
-                        ErrorResponse.error(voidResponse.response?.statusCode ?? 500, voidResponse.data, error)
+                        ErrorResponse.error(voidResponse.response?.statusCode ?? 500, voidResponse.data, error, voidResponse.response)
                     )
                     return
                 case Result.success(_):
@@ -381,7 +397,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 case Result.failure(let error):
                     completion(
                         nil,
-                        ErrorResponse.error(dataResponse.response?.statusCode ?? 500, dataResponse.data, error)
+                        ErrorResponse.error(dataResponse.response?.statusCode ?? 500, dataResponse.data, error, dataResponse.response)
                     )
                     return
                 case Result.success(_):
@@ -399,17 +415,17 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 cleanupRequest()
 
                 if case Result.failure(let error) = dataResponse.result {
-                    completion(nil, ErrorResponse.error(dataResponse.response?.statusCode ?? 500, dataResponse.data, error))
+                    completion(nil, ErrorResponse.error(dataResponse.response?.statusCode ?? 500, dataResponse.data, error, dataResponse.response))
                     return
                 }
 
                 guard let data = dataResponse.data, !data.isEmpty else {
-                    completion(nil, ErrorResponse.error(-1, nil, AlamofireDecodableRequestBuilderError.emptyDataResponse))
+                    completion(nil, ErrorResponse.error(-1, nil, AlamofireDecodableRequestBuilderError.emptyDataResponse, dataResponse.response))
                     return
                 }
 
                 guard let httpResponse = dataResponse.response else {
-                    completion(nil, ErrorResponse.error(-2, nil, AlamofireDecodableRequestBuilderError.nilHTTPResponse))
+                    completion(nil, ErrorResponse.error(-2, nil, AlamofireDecodableRequestBuilderError.nilHTTPResponse, dataResponse.response))
                     return
                 }
 
