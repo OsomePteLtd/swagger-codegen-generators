@@ -37,51 +37,11 @@
             }
           }
         },
-        "tags": [
-          "corpsec"
-        ],
+        "tags": [],
         "parameters": []
       }
     }
   },
-  "tags": [
-    {
-      "name": "corpsec"
-    }
-  ],
-  "definitions": {
-    "CoOnfidoCheckRequestBody": {
-      "type": "object",
-      "properties": {
-        "companyId": {
-          "type": "integer"
-        },
-        "documentFront": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ]
-        },
-        "documentBack": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ]
-        }
-      },
-      "required": [
-        "companyId"
-      ]
-    }
-  }
+  "tags": [],
+  "definitions": {}
 }

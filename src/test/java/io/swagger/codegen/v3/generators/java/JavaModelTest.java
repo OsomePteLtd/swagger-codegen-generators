@@ -1057,6 +1057,7 @@ public class JavaModelTest extends AbstractCodegenTest {
         Assert.assertTrue(orderFile.exists());
         folder.delete();
     }
+    
     /*
     @Test
     public void generateModel2() throws Exception {
@@ -1065,9 +1066,10 @@ public class JavaModelTest extends AbstractCodegenTest {
         final CodegenConfigurator configurator = new CodegenConfigurator()
                 .setLang("swift5")
                 .setSkipInlineModelMatches(true)
-                .setInputSpecURL("src/test/resources/3_0_0/anonimousObjectsNamingTest2.json")
-                .setOutputDir(output.getAbsolutePath())
-                ;
+                // .setInputSpecURL("src/test/resources/3_0_0/anonimousObjectsNamingTest2.json")
+                .setInputSpecURL("src/test/resources/3_0_0/inlineResponsesTest3.json")                
+                .setOutputDir(output.getAbsolutePath());
+
         final ClientOptInput clientOptInput = configurator.toClientOptInput();
         DefaultGenerator defgen = new DefaultGenerator();
         Generator gen = defgen.opts(clientOptInput);
