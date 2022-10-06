@@ -131,7 +131,7 @@ public class Swift5Codegen extends DefaultCodegenConfig {
                 "ErrorResponse", "Response",
 
                 // Added for Objective-C compatibility
-                "id", "description", "NSArray", "NSURL", "CGFloat", "NSSet", "NSString", "NSInteger", "NSUInteger",
+                /*"id",*/ "description", "NSArray", "NSURL", "CGFloat", "NSSet", "NSString", "NSInteger", "NSUInteger",
                 "NSError", "NSDictionary",
 
                 //
