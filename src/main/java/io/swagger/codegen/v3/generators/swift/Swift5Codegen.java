@@ -860,6 +860,13 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             // which provide Objective-C compatibility.
             property.vendorExtensions.put("x-swift-optional-scalar", true);
         }
+
+        boolean isException = Arrays.asList("id", "status", "type", "pathParameters", "queryStringParameters").contains(property.name);
+        boolean isOnlyProp = model.requiredVars.size() == 1;
+        boolean isRequestSchema = model.name.endsWith("Request") || model.name.endsWith("RequestBody");
+        if (property.required == true && !isOnlyProp && !isException && !isRequestSchema) {
+            property.setRequired(false);
+        }
     }
 
     @Override
