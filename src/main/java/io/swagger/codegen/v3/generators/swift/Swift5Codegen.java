@@ -681,6 +681,13 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             return camelize(WordUtils.capitalizeFully(getSymbolName(name).toUpperCase()), true);
         }
 
+        if (name.contains("&")) {
+            name = name.replaceAll("[&]", getSymbolName("&"));
+        }
+        if (name.contains("+")) {
+            name = name.replaceAll("[+]", getSymbolName("+"));
+        }
+
         // Camelize only when we have a structure defined below
         boolean camelized = false;
         if (name.matches("[A-Z][a-z0-9]+[a-zA-Z0-9]*")) {

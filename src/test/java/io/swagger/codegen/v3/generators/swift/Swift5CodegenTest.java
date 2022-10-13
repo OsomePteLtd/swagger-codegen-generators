@@ -32,6 +32,8 @@ public class Swift5CodegenTest {
         Assert.assertEquals(swiftCodegen.toEnumVarName("random , comma", null), "randomComma");
         Assert.assertEquals(swiftCodegen.toEnumVarName("random . dot", null), "randomDot");
         Assert.assertEquals(swiftCodegen.toEnumVarName("random 'special' symbols", null), "randomSpecialSymbols");
+        Assert.assertEquals(swiftCodegen.toEnumVarName("ampersand_&_symbols", null), "ampersandAmpersandSymbols");
+        Assert.assertEquals(swiftCodegen.toEnumVarName("imageSvg+xml", null), "imageSvgPlusxml");
     }
 
     @Test
