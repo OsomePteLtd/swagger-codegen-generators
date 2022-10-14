@@ -3,6 +3,7 @@ package io.swagger.codegen.v3.generators.swift;
 
 
 import io.swagger.codegen.v3.CliOption;
+import io.swagger.codegen.v3.CodegenArgument;
 import io.swagger.codegen.v3.CodegenConstants;
 import io.swagger.codegen.v3.CodegenModel;
 import io.swagger.codegen.v3.CodegenOperation;
@@ -94,8 +95,11 @@ public class Swift5Codegen extends DefaultCodegenConfig {
         outputFolder = "generated-code" + File.separator + "swift";
         modelTemplateFiles.put("model.mustache", ".swift");
         apiTemplateFiles.put("api.mustache", ".swift");
+        apiTestTemplateFiles.put("APITestHelpers.mustache", ".swift");
+        // modelTestTemplateFiles.put("api.mustache", ".swift");
         apiPackage = File.separator + "APIs";
         modelPackage = File.separator + "Models";
+        testPackage = File.separator + "TestHelpers";
 
         languageSpecificPrimitives = new HashSet<>(
             Arrays.asList(
@@ -243,6 +247,44 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             .defaultValue(Boolean.FALSE.toString()));
     }
 
+    /*
+    @Override
+    public void setLanguageArguments(List<CodegenArgument> languageArguments) {
+        if (languageArguments == null) {
+            languageArguments = new ArrayList<>();
+        }
+        if (!languageArguments.stream()
+                .anyMatch(codegenArgument -> CodegenConstants.MODEL_DOCS_OPTION.equalsIgnoreCase(codegenArgument.getOption()) && StringUtils.isNotBlank(codegenArgument.getValue()))) {
+            languageArguments.add(new CodegenArgument()
+                    .option(CodegenConstants.MODEL_DOCS_OPTION)
+                    .type("boolean")
+                    .value(Boolean.FALSE.toString()));
+        }
+        if (!languageArguments.stream()
+                .anyMatch(codegenArgument -> CodegenConstants.API_DOCS_OPTION.equalsIgnoreCase(codegenArgument.getOption()) && StringUtils.isNotBlank(codegenArgument.getValue()))) {
+            languageArguments.add(new CodegenArgument()
+                    .option(CodegenConstants.API_DOCS_OPTION)
+                    .type("boolean")
+                    .value(Boolean.FALSE.toString()));
+        }
+        if (!languageArguments.stream()
+                .anyMatch(codegenArgument -> CodegenConstants.MODEL_TESTS_OPTION.equalsIgnoreCase(codegenArgument.getOption()) && StringUtils.isNotBlank(codegenArgument.getValue()))) {
+            languageArguments.add(new CodegenArgument()
+                    .option(CodegenConstants.MODEL_TESTS_OPTION)
+                    .type("boolean")
+                    .value(Boolean.FALSE.toString()));
+        }
+        if (!languageArguments.stream()
+                .anyMatch(codegenArgument -> CodegenConstants.API_TESTS_OPTION.equalsIgnoreCase(codegenArgument.getOption()) && StringUtils.isNotBlank(codegenArgument.getValue()))) {
+            languageArguments.add(new CodegenArgument()
+                    .option(CodegenConstants.API_TESTS_OPTION)
+                    .type("boolean")
+                    .value(Boolean.TRUE.toString()));
+        }
+        super.setLanguageArguments(languageArguments);
+    }
+    */
+
     @Override
     public void processOpts() {
         super.processOpts();
@@ -350,7 +392,6 @@ public class Swift5Codegen extends DefaultCodegenConfig {
         //     ".gitignore"));
 
         copyFistAllOfProperties = true;
-
     }
 
     @Override
@@ -381,6 +422,12 @@ public class Swift5Codegen extends DefaultCodegenConfig {
     public String apiFileFolder() {
         return outputFolder + File.separator + sourceFolder
             + apiPackage().replace('.', File.separatorChar);
+    }
+
+    @Override
+    public String modelTestFileFolder() {
+        return outputFolder + File.separator + sourceFolder
+            + testPackage().replace('.', File.separatorChar);
     }
 
     @Override
