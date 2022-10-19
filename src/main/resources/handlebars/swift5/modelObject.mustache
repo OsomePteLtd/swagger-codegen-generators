@@ -15,7 +15,7 @@ public {{#useModelClasses}}class{{/useModelClasses}}{{^useModelClasses}}struct{{
     {{#description}}
     /** {{description}} */
     {{/description}}
-    public var {{name}}: {{{datatype}}}{{^required}}?{{/required}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{#objcCompatible}}{{#vendorExtensions.x-swift-optional-scalar}}
+    {{#vendorExtensions.x-swift-required}}@RequiredByAPI {{/vendorExtensions.x-swift-required}}public var {{name}}: {{{datatype}}}{{^required}}?{{/required}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{#objcCompatible}}{{#vendorExtensions.x-swift-optional-scalar}}
     public var {{name}}Num: NSNumber? {
         get {
             return {{name}}.map({ return NSNumber(value: $0) })

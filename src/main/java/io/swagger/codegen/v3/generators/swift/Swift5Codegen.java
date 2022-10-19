@@ -865,6 +865,7 @@ public class Swift5Codegen extends DefaultCodegenConfig {
         boolean isOnlyProp = model.requiredVars.size() == 1;
         boolean isRequestSchema = model.name.endsWith("Request") || model.name.endsWith("RequestBody");
         if (property.required == true && !isOnlyProp && !isException && !isRequestSchema) {
+            property.vendorExtensions.put("x-swift-required", true);
             property.setRequired(false);
         }
     }
