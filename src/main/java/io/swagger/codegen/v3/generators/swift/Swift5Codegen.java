@@ -99,7 +99,7 @@ public class Swift5Codegen extends DefaultCodegenConfig {
         // modelTestTemplateFiles.put("api.mustache", ".swift");
         apiPackage = File.separator + "APIs";
         modelPackage = File.separator + "Models";
-        testPackage = File.separator + "TestHelpers";
+        testPackage = File.separator + "TestHelpers/Stubs";
 
         languageSpecificPrimitives = new HashSet<>(
             Arrays.asList(
