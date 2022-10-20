@@ -1,0 +1,37 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Osome API",
+    "version": "2.2127.0"
+  },
+  "host": "{{host}}",
+  "basePath": "/api/v2",
+  "schemes": [
+    "https"
+  ],
+  "definitions": {
+    "Ticket": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "status": {
+          "$ref": "#/definitions/TicketStatus"
+        },
+        "ticketStatus": {
+          "$ref": "#/definitions/TicketStatus"
+        }
+      }
+    },
+    "TicketStatus": {
+      "enum": [
+        "new",
+        "progress",
+        "resolved",
+        "deleted"
+      ],
+      "type": "string"
+    }
+  }
+}

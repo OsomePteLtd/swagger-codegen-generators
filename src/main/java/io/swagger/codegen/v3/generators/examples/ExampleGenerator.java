@@ -157,7 +157,7 @@ public class ExampleGenerator {
     }
 
     private Object resolveSchemaToExample(String propertyName, String mediaType, Schema schema, Set<String> processedModels) {
-        if (processedModels.contains(schema.get$ref())) {
+        if (processedModels.contains(schema.get$ref()) && schema.getExample() != null) {
             return schema.getExample();
         }
         if (StringUtils.isNotBlank(schema.get$ref())) {
