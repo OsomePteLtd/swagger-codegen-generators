@@ -1,0 +1,36 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Osome API",
+    "version": "2.2127.0"
+  },
+  "host": "{{host}}",
+  "basePath": "/api/v2",
+  "schemes": [
+    "https"
+  ],
+  "definitions": {
+    "Ticket": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "ticketOther": {
+          "$ref": "#/definitions/TicketOther"
+        }
+      }
+    },
+    "TicketOther": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "ticket": {
+          "$ref": "#/definitions/Ticket"
+        }
+      }
+    }
+  }
+}
