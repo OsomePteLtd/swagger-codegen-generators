@@ -13,7 +13,7 @@ public final class {{projectName}}API {
     public static var customHeaders: [String:String] = [:]
     public static var requestBuilderFactory: RequestBuilderFactory = AlamofireRequestBuilderFactory()
     public static var globalErrorHandler: ((Error?, Data?, HTTPURLResponse?) -> Error)?
-
+    public static var responseQueue: DispatchQueue = .main
 }
 
 open class RequestBuilder<T> {

@@ -145,7 +145,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
 
         switch T.self {
         case is String.Type:
-            validatedRequest.responseString(completionHandler: { (stringResponse) in
+            validatedRequest.responseString(queue: SwaggerClientAPI.responseQueue, completionHandler: { (stringResponse) in
                 cleanupRequest()
 
                 switch stringResponse.result {
@@ -165,7 +165,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 }
             })
         case is URL.Type:
-            validatedRequest.responseData(completionHandler: { (dataResponse) in
+            validatedRequest.responseData(queue: SwaggerClientAPI.responseQueue, completionHandler: { (dataResponse) in
                 cleanupRequest()
 
                 do {
@@ -215,7 +215,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 return
             })
         case is Void.Type:
-            validatedRequest.responseData(completionHandler: { (voidResponse) in
+            validatedRequest.responseData(queue: SwaggerClientAPI.responseQueue, completionHandler: { (voidResponse) in
                 cleanupRequest()
 
                 if case Result.failure(let error) = voidResponse.result {
@@ -234,7 +234,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 )
             })
         default:
-            validatedRequest.responseData(completionHandler: { (dataResponse) in
+            validatedRequest.responseData(queue: SwaggerClientAPI.responseQueue, completionHandler: { (dataResponse) in
                 cleanupRequest()
 
                 if case Result.failure(let error) = dataResponse.result {
@@ -349,7 +349,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
 
         switch T.self {
         case is String.Type:
-            validatedRequest.responseString(completionHandler: { (stringResponse) in
+            validatedRequest.responseString(queue: SwaggerClientAPI.responseQueue, completionHandler: { (stringResponse) in
                 cleanupRequest()
 
                 switch stringResponse.result {
@@ -370,7 +370,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 }
             })
         case is Void.Type:
-            validatedRequest.responseData(completionHandler: { (voidResponse) in
+            validatedRequest.responseData(queue: SwaggerClientAPI.responseQueue, completionHandler: { (voidResponse) in
                 cleanupRequest()
 
                 switch voidResponse.result {
@@ -390,7 +390,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 }
             })
         case is Data.Type:
-            validatedRequest.responseData(completionHandler: { (dataResponse) in
+            validatedRequest.responseData(queue: SwaggerClientAPI.responseQueue, completionHandler: { (dataResponse) in
                 cleanupRequest()
 
                 switch dataResponse.result {
@@ -411,7 +411,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 }
             })
         default:
-            validatedRequest.responseData(completionHandler: { (dataResponse: DataResponse<Data, AFError>) in
+            validatedRequest.responseData(queue: SwaggerClientAPI.responseQueue, completionHandler: { (dataResponse: DataResponse<Data, AFError>) in
                 cleanupRequest()
 
                 if case Result.failure(let error) = dataResponse.result {
