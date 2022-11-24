@@ -186,7 +186,7 @@ public class Swift5Codegen extends DefaultCodegenConfig {
         typeMapping.put("array", "Array");
         typeMapping.put("List", "Array");
         typeMapping.put("map", "Dictionary");
-        typeMapping.put("date", "Date");
+        typeMapping.put("date", "String");
         typeMapping.put("Date", "Date");
         typeMapping.put("DateTime", "Date");
         typeMapping.put("boolean", "Bool");
