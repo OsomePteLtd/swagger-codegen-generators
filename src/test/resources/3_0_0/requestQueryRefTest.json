@@ -78,6 +78,14 @@
               "items": {
                 "$ref": "#/definitions/AcDocumentStatus"
               }
+            },
+            "createdAfter": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "createdBefore": {
+              "type": "string",
+              "format": "date"
             }
           }
         }

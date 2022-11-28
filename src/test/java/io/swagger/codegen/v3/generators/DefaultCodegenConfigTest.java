@@ -217,6 +217,15 @@ public class DefaultCodegenConfigTest {
         Assert.assertEquals(codegenOp.getQueryParams().get(3).paramName, "filter[statuses][]");
         Assert.assertEquals(codegenOp.getQueryParams().get(3).dataType, "List");
         Assert.assertEquals(codegenOp.getQueryParams().get(3).baseType, "AcDocumentStatus");
+
+        Assert.assertEquals(codegenOp.getQueryParams().get(4).paramName, "filter[createdAfter]");
+        Assert.assertEquals(codegenOp.getQueryParams().get(4).dataType, "Date");
+        Assert.assertEquals(codegenOp.getQueryParams().get(4).dataFormat, "date-time");
+
+        Assert.assertEquals(codegenOp.getQueryParams().get(5).paramName, "filter[createdBefore]");
+        Assert.assertEquals(codegenOp.getQueryParams().get(5).dataType, "date");
+        Assert.assertEquals(codegenOp.getQueryParams().get(5).dataFormat, "date");
+
     }
 
 

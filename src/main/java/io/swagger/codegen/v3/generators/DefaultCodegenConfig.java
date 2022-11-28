@@ -2237,8 +2237,11 @@ public abstract class DefaultCodegenConfig implements CodegenConfig {
                     Pattern p = Pattern.compile("^Schema: \\[\\`([a-zA-Z0-9]+)\\`\\]");
                     Matcher m = p.matcher(param.getDescription());
                     if (m.find()) {
-                        
-                        Schema schema = OpenAPIUtil.getSchemaFromName(m.group(1), openAPI);
+                        String schemaName = m.group(1);
+                        Schema schema = OpenAPIUtil.getSchemaFromName(schemaName, openAPI);
+                        if (schema == null) {
+                            LOGGER.warn("Unknown query schema: " + schemaName);
+                        }
                         operationParameters.parseNestedObjects(param.getName(), schema, imports, this, openAPI);
                         continue;
                     }
