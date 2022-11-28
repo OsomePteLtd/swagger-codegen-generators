@@ -207,20 +207,25 @@ public class DefaultCodegenConfigTest {
         
         Assert.assertEquals(codegenOp.getQueryParams().get(0).paramName, "companyId");
         Assert.assertEquals(codegenOp.getQueryParams().get(0).dataType, "Integer");
+        Assert.assertEquals(codegenOp.getQueryParams().get(0).required, true);
         
         Assert.assertEquals(codegenOp.getQueryParams().get(1).paramName, "branch");
         Assert.assertEquals(codegenOp.getQueryParams().get(1).dataType, "String");
+        Assert.assertEquals(codegenOp.getQueryParams().get(1).required, false);
         
         Assert.assertEquals(codegenOp.getQueryParams().get(2).paramName, "filter[search]");
         Assert.assertEquals(codegenOp.getQueryParams().get(2).dataType, "String");
+        Assert.assertEquals(codegenOp.getQueryParams().get(2).required, false);
 
         Assert.assertEquals(codegenOp.getQueryParams().get(3).paramName, "filter[statuses][]");
         Assert.assertEquals(codegenOp.getQueryParams().get(3).dataType, "List");
         Assert.assertEquals(codegenOp.getQueryParams().get(3).baseType, "AcDocumentStatus");
+        Assert.assertEquals(codegenOp.getQueryParams().get(3).required, false);
 
         Assert.assertEquals(codegenOp.getQueryParams().get(4).paramName, "filter[createdAfter]");
         Assert.assertEquals(codegenOp.getQueryParams().get(4).dataType, "Date");
         Assert.assertEquals(codegenOp.getQueryParams().get(4).dataFormat, "date-time");
+        Assert.assertEquals(codegenOp.getQueryParams().get(4).required, false);
 
         Assert.assertEquals(codegenOp.getQueryParams().get(5).paramName, "filter[createdBefore]");
         Assert.assertEquals(codegenOp.getQueryParams().get(5).dataType, "date");

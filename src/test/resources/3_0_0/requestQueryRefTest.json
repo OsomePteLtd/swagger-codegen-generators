@@ -87,10 +87,16 @@
               "type": "string",
               "format": "date"
             }
-          }
+          },
+          "required": [
+            "search"
+          ]
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "companyId"
+      ]
     },
     "CoIndustryResponse": {
       "type": "object",

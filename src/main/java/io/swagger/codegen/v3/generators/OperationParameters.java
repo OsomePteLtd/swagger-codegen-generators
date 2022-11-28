@@ -175,6 +175,9 @@ public class OperationParameters {
                 parameterName = name.equals("...") ? key : String.format("%s[%s]", name, key);
             }
             if (isObjectWithProperties(property)) {
+                if (required != true) {
+                    property.setRequired(new ArrayList<>());
+                }
                 parseNestedObjects(parameterName, property, imports, codegenConfig, openAPI);
                 continue;
             }
