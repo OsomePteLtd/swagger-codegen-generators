@@ -165,7 +165,7 @@ public class ExampleGenerator {
                     model = openAPI.getComponents().getSchemas().get(simpleName);
                 }
                 if (model.getType() != "string") {
-                    return schema.getExample();    
+                    return model.getExample();    
                 }
             } else {
                 return schema.getExample();
