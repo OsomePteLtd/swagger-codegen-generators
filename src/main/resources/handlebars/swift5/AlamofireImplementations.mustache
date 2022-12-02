@@ -68,48 +68,46 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
         let encoding:ParameterEncoding = isBody ? JSONDataEncoding() : URLEncoding()
 
         let xMethod = Alamofire.HTTPMethod(rawValue: method)
-        /*
-        let fileKeys = parameters == nil ? [] : parameters!.filter { $1 is NSURL }
-                                                           .map { $0.0 }
+       
+        let fileKeys = parameters == nil ? [] : parameters!
+            .filter { /*($1 is NSURL) || */ ($1 is MultipartFile) }
+            .map { $0.0 }
 
         if fileKeys.count > 0 {
-            session.upload(multipartFormData: { mpForm in
-                for (k, v) in self.parameters! {
-                    switch v {
-                    case let fileURL as URL:
-                        if let mimeType = self.contentTypeForFormPart(fileURL: fileURL) {
-                            mpForm.append(fileURL, withName: k, fileName: fileURL.lastPathComponent, mimeType: mimeType)
+            let uploadRequest = session.upload(
+                multipartFormData: { mpForm in
+                    for (k, v) in self.parameters! {
+                        switch v {
+                        case let fileURL as URL:
+                            if let mimeType = self.contentTypeForFormPart(fileURL: fileURL) {
+                                mpForm.append(fileURL, withName: k, fileName: fileURL.lastPathComponent, mimeType: mimeType)
+                            }
+                            else {
+                                mpForm.append(fileURL, withName: k)
+                            }
+                        case let string as String:
+                            mpForm.append(string.data(using: String.Encoding.utf8)!, withName: k)
+                        case let number as NSNumber:
+                            mpForm.append(number.stringValue.data(using: String.Encoding.utf8)!, withName: k)
+                        case let rawRep as any RawRepresentable<String>:
+                            mpForm.append(rawRep.rawValue.data(using: String.Encoding.utf8)!, withName: k)
+                        case let file as MultipartFile:
+                            mpForm.append(file.data, withName: k, fileName: file.filename, mimeType: file.mimeType)
+                        default:
+                            fatalError("Unprocessable value \(v) with key \(k)")
                         }
-                        else {
-                            mpForm.append(fileURL, withName: k)
-                        }
-                    case let string as String:
-                        mpForm.append(string.data(using: String.Encoding.utf8)!, withName: k)
-                    case let number as NSNumber:
-                        mpForm.append(number.stringValue.data(using: String.Encoding.utf8)!, withName: k)
-                    default:
-                        fatalError("Unprocessable value \(v) with key \(k)")
                     }
-                }
-                }, to: URLString, method: xMethod!, headers: nil, encodingCompletion: { encodingResult in
-                switch encodingResult {
-                case .success(let upload, _, _):
-                    if let onProgressReady = self.onProgressReady {
-                        onProgressReady(upload.uploadProgress)
-                    }
-                    self.processRequest(request: upload, sessionId, completion)
-                case .failure(let encodingError):
-                    completion(nil, ErrorResponse.error(415, nil, encodingError))
-                }
-            })
-        } else {
-            let request = makeRequest(session: session, method: xMethod!, encoding: encoding, headers: headers)
+                },
+                to: URLString, usingThreshold: UInt64(0), method: xMethod, headers: HTTPHeaders(headers)
+            )
             if let onProgressReady = self.onProgressReady {
-                onProgressReady(request.progress)
+                uploadRequest.uploadProgress(queue: SwaggerClientAPI.responseQueue) { progress in
+                    onProgressReady(progress)
+                }
             }
-            processRequest(request: request, sessionId, completion)
+            processRequest(request: uploadRequest, sessionId, wrapCompletion(completion))
+            return;
         }
-        */
         let request = makeRequest(session: session, method: xMethod, encoding: encoding, headers: headers)
         processRequest(request: request, sessionId, wrapCompletion(completion))
     }
