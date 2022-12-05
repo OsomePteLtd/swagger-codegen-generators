@@ -27,6 +27,8 @@ open class RequestBuilder<T> {
     /// Optional block to obtain a reference to the request's progress instance when available.
     public var onProgressReady: ((Progress) -> ())?
 
+    public var requestModifier: ((inout URLRequest) throws -> Void)?
+
     required public init(method: String, URLString: String, parameters: [String:Any]?, isBody: Bool, headers: [String:String] = [:]) {
         self.method = method
         self.URLString = URLString
