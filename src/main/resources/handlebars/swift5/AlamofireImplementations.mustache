@@ -86,14 +86,14 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                             else {
                                 mpForm.append(fileURL, withName: k)
                             }
-                        case let string as String:
-                            mpForm.append(string.data(using: String.Encoding.utf8)!, withName: k)
-                        case let number as NSNumber:
-                            mpForm.append(number.stringValue.data(using: String.Encoding.utf8)!, withName: k)
-                        case let rawRep as any RawRepresentable<String>:
-                            mpForm.append(rawRep.rawValue.data(using: String.Encoding.utf8)!, withName: k)
                         case let file as MultipartFile:
                             mpForm.append(file.data, withName: k, fileName: file.filename, mimeType: file.mimeType)
+                        case let string as String:
+                            mpForm.append(string.data(using: String.Encoding.utf8)!, withName: k)
+                        case let rawRep as any RawRepresentable<String>:
+                            mpForm.append(rawRep.rawValue.data(using: String.Encoding.utf8)!, withName: k)
+                        case let number as NSNumber:
+                            mpForm.append(number.stringValue.data(using: String.Encoding.utf8)!, withName: k)
                         default:
                             fatalError("Unprocessable value \(v) with key \(k)")
                         }
