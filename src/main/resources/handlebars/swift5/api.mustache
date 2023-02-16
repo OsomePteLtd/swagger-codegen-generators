@@ -43,7 +43,7 @@ final public class {{classname}} {
      {{/parameters}}
      - parameter completion: completion handler to receive the data and the error objects
      */
-    internal class func {{operationId}}<T: Codable>({{#parameters}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{#hasMore}}, {{/hasMore}}{{/parameters}}{{#hasParams}}, {{/hasParams}}completion: @escaping ((_ data: {{#returnType}}T{{/returnType}}{{^returnType}}Void{{/returnType}}?,_ error: Error?) -> Void)) {
+    internal class func {{operationId}}{{#returnType}}<T: Codable>{{/returnType}}({{#parameters}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{#hasMore}}, {{/hasMore}}{{/parameters}}{{#hasParams}}, {{/hasParams}}completion: @escaping ((_ data: {{#returnType}}T{{/returnType}}{{^returnType}}Void{{/returnType}}?,_ error: Error?) -> Void)) {
         {{operationId}}WithRequestBuilderFull({{#parameters}}{{paramName}}: {{paramName}}{{#hasMore}}, {{/hasMore}}{{/parameters}}).execute { (response, error) -> Void in
         {{#returnType}}
             completion(response?.body, error)
@@ -103,6 +103,7 @@ final public class {{classname}} {
         }
     }
 
+    {{#returnType}}
     /**
      {{#summary}}
      {{{summary}}}
@@ -113,9 +114,9 @@ final public class {{classname}} {
      - returns: Single<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}>
      */
 
-    public class func {{operationId}}<T: {{classname}}{{ operationIdCamelCase }}ResponseBodyType>({{#parameters}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{#hasMore}}, {{/hasMore}}{{/parameters}}) -> Single<{{#returnType}}T{{/returnType}}{{^returnType}}Void{{/returnType}}> {
+    public class func {{operationId}}{{#returnType}}<T: {{classname}}{{ operationIdCamelCase }}ResponseBodyType>{{/returnType}}({{#parameters}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{#hasMore}}, {{/hasMore}}{{/parameters}}) -> Single<{{#returnType}}T{{/returnType}}{{^returnType}}Void{{/returnType}}> {
         Single<{{#returnType}}T{{/returnType}}{{^returnType}}Void{{/returnType}}>.create { single -> Disposable in
-            {{operationId}}({{#parameters}}{{paramName}}: {{paramName}}{{#hasMore}}, {{/hasMore}}{{/parameters}}) { (data: T?, error) in
+            {{operationId}}({{#parameters}}{{paramName}}: {{paramName}}{{#hasMore}}, {{/hasMore}}{{/parameters}}) { (data: {{#returnType}}T{{/returnType}}{{^returnType}}Void{{/returnType}}?, error) in
                 if let error = error {
                     single(.failure(error as Error))
                 } else {
@@ -125,6 +126,7 @@ final public class {{classname}} {
             return Disposables.create()
         }
     }
+    {{/returnType}}
 {{/useRxSwift}}
 
     /**
@@ -152,7 +154,7 @@ final public class {{classname}} {
         {{operationId}}WithRequestBuilderFull({{#parameters}}{{paramName}}: {{paramName}}{{#hasMore}}, {{/hasMore}}{{/parameters}})
     }
 
-    internal class func {{operationId}}WithRequestBuilderFull<T: Codable>({{#parameters}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{#hasMore}}, {{/hasMore}}{{/parameters}}) -> RequestBuilder<{{#returnType}}T{{/returnType}}{{^returnType}}Void{{/returnType}}> {
+    internal class func {{operationId}}WithRequestBuilderFull{{#returnType}}<T: Codable>{{/returnType}}({{#parameters}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{#hasMore}}, {{/hasMore}}{{/parameters}}) -> RequestBuilder<{{#returnType}}T{{/returnType}}{{^returnType}}Void{{/returnType}}> {
         {{^pathParams}}let{{/pathParams}}{{#pathParams}}{{^secondaryParam}}var{{/secondaryParam}}{{/pathParams}} path = "{{{path}}}"{{#pathParams}}
         let {{paramName}}PreEscape = "\({{paramName}}{{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}.rawValue{{/isContainer}}{{/isEnum}})"
         let {{paramName}}PostEscape = {{paramName}}PreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""

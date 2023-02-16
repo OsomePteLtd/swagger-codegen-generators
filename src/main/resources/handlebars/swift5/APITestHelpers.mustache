@@ -15,6 +15,7 @@ extension {{projectName}}API {
 final public class {{classname}}Stubs {
 {{#operation}}
 {{#contents}}
+{{#returnType}}  
     
     /**
      {{#summary}}
@@ -47,6 +48,7 @@ final public class {{classname}}Stubs {
     }
     {{/examples}}
     
+{{/returnType}}
 {{/contents}}
 {{/operation}}
 }
