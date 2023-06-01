@@ -67,19 +67,19 @@ public struct APIHelper {
                         let key: String = item.key.replacingOccurrences(of: "[]", with: "[\(offset)]")
                         guard let subdict = element as? [String: Any?] else {
                             if let v = element {
-                                result.append(URLQueryItem(name: key, value: String(describing: v)))
+                                result.append(URLQueryItem(name: key, value: normalize(value: v)))
                             }
                             return;
                         }
                         let subItems = mapValuesToQueryItems(subdict);
                         subItems?.forEach({ qi in
                             guard let v = qi.value else { return }
-                            result.append(URLQueryItem(name: "\(key)[\(qi.name)]", value: v))
+                            result.append(URLQueryItem(name: "\(key)[\(qi.name)]", value: normalize(value: v)))
                         })
                     }
             } else {
                 if let v = item.value {
-                    result.append(URLQueryItem(name: item.key, value: String(describing: v)))
+                    result.append(URLQueryItem(name: item.key, value: normalize(value: v)))
                 }
             }
         }
@@ -89,4 +89,18 @@ public struct APIHelper {
         return destination
     }
 }
+
+func normalize(value: Any) -> String {
+    if let v = value as? NSNumber {
+        // it turned out, after JSONSerialization all boolean values convert into integers 1/0
+        if v === kCFBooleanTrue {
+            return "true"
+        }
+        if v === kCFBooleanFalse {
+            return "false"
+        }
+    }
+    return String(describing: value)
+}
+
 
