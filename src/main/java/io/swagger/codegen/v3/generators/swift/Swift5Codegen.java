@@ -3,6 +3,7 @@ package io.swagger.codegen.v3.generators.swift;
 
 
 import io.swagger.codegen.v3.CliOption;
+import io.swagger.codegen.v3.CodegenArgument;
 import io.swagger.codegen.v3.CodegenConstants;
 import io.swagger.codegen.v3.CodegenModel;
 import io.swagger.codegen.v3.CodegenOperation;
@@ -94,8 +95,11 @@ public class Swift5Codegen extends DefaultCodegenConfig {
         outputFolder = "generated-code" + File.separator + "swift";
         modelTemplateFiles.put("model.mustache", ".swift");
         apiTemplateFiles.put("api.mustache", ".swift");
+        apiTestTemplateFiles.put("APITestHelpers.mustache", ".swift");
+        // modelTestTemplateFiles.put("api.mustache", ".swift");
         apiPackage = File.separator + "APIs";
         modelPackage = File.separator + "Models";
+        testPackage = File.separator + "TestHelpers/Stubs";
 
         languageSpecificPrimitives = new HashSet<>(
             Arrays.asList(
@@ -131,7 +135,7 @@ public class Swift5Codegen extends DefaultCodegenConfig {
                 "ErrorResponse", "Response",
 
                 // Added for Objective-C compatibility
-                "id", "description", "NSArray", "NSURL", "CGFloat", "NSSet", "NSString", "NSInteger", "NSUInteger",
+                /*"id", "description", */"NSArray", "NSURL", "CGFloat", "NSSet", "NSString", "NSInteger", "NSUInteger",
                 "NSError", "NSDictionary",
 
                 //
@@ -182,7 +186,7 @@ public class Swift5Codegen extends DefaultCodegenConfig {
         typeMapping.put("array", "Array");
         typeMapping.put("List", "Array");
         typeMapping.put("map", "Dictionary");
-        typeMapping.put("date", "Date");
+        typeMapping.put("date", "String");
         typeMapping.put("Date", "Date");
         typeMapping.put("DateTime", "Date");
         typeMapping.put("boolean", "Bool");
@@ -242,6 +246,44 @@ public class Swift5Codegen extends DefaultCodegenConfig {
                 + "string->int, int->string)")
             .defaultValue(Boolean.FALSE.toString()));
     }
+
+    /*
+    @Override
+    public void setLanguageArguments(List<CodegenArgument> languageArguments) {
+        if (languageArguments == null) {
+            languageArguments = new ArrayList<>();
+        }
+        if (!languageArguments.stream()
+                .anyMatch(codegenArgument -> CodegenConstants.MODEL_DOCS_OPTION.equalsIgnoreCase(codegenArgument.getOption()) && StringUtils.isNotBlank(codegenArgument.getValue()))) {
+            languageArguments.add(new CodegenArgument()
+                    .option(CodegenConstants.MODEL_DOCS_OPTION)
+                    .type("boolean")
+                    .value(Boolean.FALSE.toString()));
+        }
+        if (!languageArguments.stream()
+                .anyMatch(codegenArgument -> CodegenConstants.API_DOCS_OPTION.equalsIgnoreCase(codegenArgument.getOption()) && StringUtils.isNotBlank(codegenArgument.getValue()))) {
+            languageArguments.add(new CodegenArgument()
+                    .option(CodegenConstants.API_DOCS_OPTION)
+                    .type("boolean")
+                    .value(Boolean.FALSE.toString()));
+        }
+        if (!languageArguments.stream()
+                .anyMatch(codegenArgument -> CodegenConstants.MODEL_TESTS_OPTION.equalsIgnoreCase(codegenArgument.getOption()) && StringUtils.isNotBlank(codegenArgument.getValue()))) {
+            languageArguments.add(new CodegenArgument()
+                    .option(CodegenConstants.MODEL_TESTS_OPTION)
+                    .type("boolean")
+                    .value(Boolean.FALSE.toString()));
+        }
+        if (!languageArguments.stream()
+                .anyMatch(codegenArgument -> CodegenConstants.API_TESTS_OPTION.equalsIgnoreCase(codegenArgument.getOption()) && StringUtils.isNotBlank(codegenArgument.getValue()))) {
+            languageArguments.add(new CodegenArgument()
+                    .option(CodegenConstants.API_TESTS_OPTION)
+                    .type("boolean")
+                    .value(Boolean.TRUE.toString()));
+        }
+        super.setLanguageArguments(languageArguments);
+    }
+    */
 
     @Override
     public void processOpts() {
@@ -306,9 +348,9 @@ public class Swift5Codegen extends DefaultCodegenConfig {
 
         setLenientTypeCast(convertPropertyToBooleanAndWriteBack(LENIENT_TYPE_CAST));
 
-        supportingFiles.add(new SupportingFile("Podspec.mustache",
-            "",
-            projectName + ".podspec"));
+        // supportingFiles.add(new SupportingFile("Podspec.mustache",
+        //     "",
+        //     projectName + ".podspec"));
         supportingFiles.add(new SupportingFile("Cartfile.mustache",
             "",
             "Cartfile"));
@@ -342,15 +384,14 @@ public class Swift5Codegen extends DefaultCodegenConfig {
         supportingFiles.add(new SupportingFile("JSONValue.mustache",
             sourceFolder,
             "JSONValue.swift"));
-        supportingFiles.add(new SupportingFile("git_push.sh.mustache",
-            "",
-            "git_push.sh"));
-        supportingFiles.add(new SupportingFile("gitignore.mustache",
-            "",
-            ".gitignore"));
+        // supportingFiles.add(new SupportingFile("git_push.sh.mustache",
+        //     "",
+        //     "git_push.sh"));
+        // supportingFiles.add(new SupportingFile("gitignore.mustache",
+        //     "",
+        //     ".gitignore"));
 
         copyFistAllOfProperties = true;
-
     }
 
     @Override
@@ -381,6 +422,12 @@ public class Swift5Codegen extends DefaultCodegenConfig {
     public String apiFileFolder() {
         return outputFolder + File.separator + sourceFolder
             + apiPackage().replace('.', File.separatorChar);
+    }
+
+    @Override
+    public String modelTestFileFolder() {
+        return outputFolder + File.separator + sourceFolder
+            + testPackage().replace('.', File.separatorChar);
     }
 
     @Override
@@ -669,9 +716,23 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             return "_" + startingNumbers + camelize(nameWithoutStartingNumbers, true);
         }
 
+        if (name.startsWith("+")) {
+            name = name.replaceFirst("\\+", getSymbolName("+") + "_");
+        }
+        if (name.startsWith("-")) {
+            name = name.replaceFirst("-", getSymbolName("-") + "_");
+        }
+
         // for symbol, e.g. $, #
         if (getSymbolName(name) != null) {
             return camelize(WordUtils.capitalizeFully(getSymbolName(name).toUpperCase()), true);
+        }
+
+        if (name.contains("&")) {
+            name = name.replaceAll("[&]", getSymbolName("&"));
+        }
+        if (name.contains("+")) {
+            name = name.replaceAll("[+]", getSymbolName("+"));
         }
 
         // Camelize only when we have a structure defined below
@@ -703,10 +764,13 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             return name;
         }
 
-        char[] separators = {'-', '_', ' ', ':', '(', ')'};
-        return camelize(WordUtils.capitalizeFully(StringUtils.lowerCase(name), separators)
-                .replaceAll("[-_ :()]", ""),
-            true);
+        if (isAllUpper(name)) {
+            name = StringUtils.lowerCase(name); 
+        }
+        char[] separators = {'-', '_', ' ', ':', '(', ')', '\'', ','};
+        String result = WordUtils.capitalize(name, separators)
+                .replaceAll("[-_ :()',]", "");
+        return camelize(result, true);
     }
 
     @Override
@@ -796,6 +860,14 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             // which provide Objective-C compatibility.
             property.vendorExtensions.put("x-swift-optional-scalar", true);
         }
+
+        boolean isException = Arrays.asList("id", "status", "type", "pathParameters", "queryStringParameters").contains(property.name);
+        boolean isOnlyProp = model.requiredVars.size() == 1;
+        boolean isRequestSchema = model.name.endsWith("Request") || model.name.endsWith("RequestBody");
+        if (property.required == true && !isOnlyProp && !isException && !isRequestSchema) {
+            property.vendorExtensions.put("x-swift-required", true);
+            property.setRequired(false);
+        }
     }
 
     @Override
@@ -852,5 +924,27 @@ public class Swift5Codegen extends DefaultCodegenConfig {
             codegenModel.vars = codegenProperties;
         }
     }
-}
 
+    // String captializeAllFirstLetter(String name) {
+    //     char[] array = name.toCharArray();
+    //     array[0] = Character.toUpperCase(array[0]);
+
+    //     for (int i = 1; i < array.length; i++) {
+    //         if (Character.isWhitespace(array[i - 1])) {
+    //             array[i] = Character.toUpperCase(array[i]);
+    //         }
+    //     }
+
+    //     return new String(array);
+    // }
+
+    boolean isAllUpper(String s) {
+        for(char c : s.toCharArray()) {
+            if(Character.isLetter(c) && Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+}

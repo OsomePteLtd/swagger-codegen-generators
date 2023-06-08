@@ -105,6 +105,29 @@ public class Swift4ModelTest {
         Assert.assertTrue(getBooleanValue(property7, CodegenConstants.IS_NOT_CONTAINER_EXT_NAME));
     }
 
+    @Test(description = "convert a simple java model")
+    public void simpleModelTest2() {
+        final Schema schema = getSimpleSchema();
+        final Swift5Codegen codegen = new Swift5Codegen();
+        final CodegenModel cm = codegen.fromModel("sample", schema);
+
+        Assert.assertEquals(cm.name, "sample");
+        Assert.assertEquals(cm.classname, "Sample");
+        Assert.assertEquals(cm.description, "a sample model");
+        Assert.assertEquals(cm.vars.size(), 7);
+
+        final CodegenProperty property1 = cm.vars.get(0);
+        Assert.assertEquals(property1.baseName, "id");
+        Assert.assertEquals(property1.datatype, "Int64");
+        Assert.assertEquals(property1.name, "id");
+        Assert.assertNull(property1.defaultValue);
+        Assert.assertEquals(property1.baseType, "Int64");
+        Assert.assertTrue(getBooleanValue(property1, CodegenConstants.HAS_MORE_EXT_NAME));
+        Assert.assertTrue(property1.required);
+        Assert.assertTrue(getBooleanValue(property1, CodegenConstants.IS_PRIMITIVE_TYPE_EXT_NAME));
+        Assert.assertTrue(getBooleanValue(property1, CodegenConstants.IS_NOT_CONTAINER_EXT_NAME));
+    }
+
     private Schema getSimpleSchema() {
         return new Schema()
                 .type("object")

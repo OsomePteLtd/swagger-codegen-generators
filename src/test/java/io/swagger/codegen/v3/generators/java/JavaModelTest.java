@@ -1,6 +1,8 @@
 package io.swagger.codegen.v3.generators.java;
 
 import com.google.common.collect.Sets;
+
+import io.swagger.codegen.v3.Generator;
 import io.swagger.codegen.v3.ClientOptInput;
 import io.swagger.codegen.v3.CodegenConstants;
 import io.swagger.codegen.v3.CodegenModel;
@@ -41,6 +43,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -1054,6 +1057,36 @@ public class JavaModelTest extends AbstractCodegenTest {
         Assert.assertTrue(orderFile.exists());
         folder.delete();
     }
+    
+    /*
+    @Test
+    public void generateModel2() throws Exception {
+        folder.create();
+        final File output = folder.getRoot();
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setLang("swift5")
+                .setSkipInlineModelMatches(true)
+                // .setInputSpecURL("src/test/resources/3_0_0/anonimousObjectsNamingTest2.json")
+                .setInputSpecURL("src/test/resources/3_0_0/inlineResponsesTest3.json")                
+                .setOutputDir(output.getAbsolutePath());
+
+        final ClientOptInput clientOptInput = configurator.toClientOptInput();
+        DefaultGenerator defgen = new DefaultGenerator();
+        Generator gen = defgen.opts(clientOptInput);
+        gen.generate();
+
+        File requestBodyFile = new File(output, "swaggerClient/Classes/Swaggers/Models/CoOnfidoCheckRequestBody.swift");
+        Assert.assertTrue(requestBodyFile.exists());
+
+        File documentFrontFile = new File(output, "swaggerClient/Classes/Swaggers/Models/CoOnfidoCheckRequestBodyDocumentFront.swift");
+        Assert.assertTrue(documentFrontFile.exists());
+
+        File documentFrontBack = new File(output, "swaggerClient/Classes/Swaggers/Models/CoOnfidoCheckRequestBodyDocumentBack.swift");
+        Assert.assertTrue(documentFrontBack.exists());
+
+        folder.delete();
+    }
+    */
 
     @Test
     public void generateModelDiscriminatorOrderSchemas() throws Exception {

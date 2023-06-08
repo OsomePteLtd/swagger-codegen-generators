@@ -1,0 +1,56 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Osome API",
+    "version": "2.2127.0"
+  },
+  "host": "{{host}}",
+  "basePath": "/api/v2",
+  "schemes": [
+    "https"
+  ],
+  "definitions": {
+    "DocumentBasic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "Document": {
+      "title": "`pandaDocumentId` is the old \"PandaDocument\" id for backward compatibility",
+      "description": "`pandaDocumentId` is the old \"PandaDocument\" id for backward compatibility\n\nDeprecated fields:\n\n- `thumbnail` (use `previews`.`thumbnail` instead)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parent": {
+          "$ref": "#/definitions/DocumentBasic"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DocumentBasic"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    }
+  }
+}

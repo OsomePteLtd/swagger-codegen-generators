@@ -4,13 +4,16 @@
 // https://github.com/swagger-api/swagger-codegen
 //
 
-import Foundation
+import Foundation{{#useRxSwift}}
+import RxSwift{{/useRxSwift}}
 
-open class {{projectName}}API {
+public final class {{projectName}}API {
     public static var basePath = "{{{basePath}}}"
     public static var credential: URLCredential?
     public static var customHeaders: [String:String] = [:]
     public static var requestBuilderFactory: RequestBuilderFactory = AlamofireRequestBuilderFactory()
+    public static var globalErrorHandler: ((Error?, Data?, HTTPURLResponse?) -> Error)?
+    public static var responseQueue: DispatchQueue = .main
 }
 
 open class RequestBuilder<T> {
@@ -23,6 +26,8 @@ open class RequestBuilder<T> {
 
     /// Optional block to obtain a reference to the request's progress instance when available.
     public var onProgressReady: ((Progress) -> ())?
+
+    public var requestModifier: ((inout URLRequest) throws -> Void)?
 
     required public init(method: String, URLString: String, parameters: [String:Any]?, isBody: Bool, headers: [String:String] = [:]) {
         self.method = method
@@ -53,6 +58,21 @@ open class RequestBuilder<T> {
         self.credential = {{projectName}}API.credential
         return self
     }
+    
+    {{#useRxSwift}}
+    public func rx_execute() -> Single<T> {
+        return Single.create { single -> Disposable in
+            self.execute { (response, error) -> Void in
+                if let error = error {
+                    single(.failure(error as Error))
+                } else {
+                    single(.success(response!.body!))
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    {{/useRxSwift}}
 }
 
 public protocol RequestBuilderFactory {

@@ -46,20 +46,61 @@ public struct APIHelper {
     }
 
 
-    public static func mapValuesToQueryItems(_ source: [String:Any?]) -> [URLQueryItem]? {
-        let destination = source.filter({ $0.value != nil}).reduce(into: [URLQueryItem]()) { (result, item) in
+    public static func mapValuesToQueryItems(_ source: [String: Any?]) -> [URLQueryItem]? {
+        do {
+            guard let data = CodableHelper.encode(AnyCodable(source), prettyPrint: true).data else { return nil }
+            return try mapDataToQueryItems(data)
+        } catch {
+            return nil
+        }
+    }
+
+    private static func mapDataToQueryItems(_ data: Data) throws -> [URLQueryItem]? {
+        guard let sourceDict = try JSONSerialization.jsonObject(with: data) as? [String: Any?] else { return nil }
+
+        let destination = sourceDict.reduce(into: [URLQueryItem]()) { (result, item) in
             if let collection = item.value as? Array<Any?> {
-                let value = collection.filter({ $0 != nil }).map({"\($0!)"}).joined(separator: ",")
-                result.append(URLQueryItem(name: item.key, value: value))
-            } else if let value = item.value {
-                result.append(URLQueryItem(name: item.key, value: "\(value)"))
+                collection
+                    .filter({ $0 != nil && !($0 is NSNull) })
+                    .enumerated()
+                    .forEach { offset, element in
+                        let key: String = item.key.replacingOccurrences(of: "[]", with: "[\(offset)]")
+                        guard let subdict = element as? [String: Any?] else {
+                            if let v = element {
+                                result.append(URLQueryItem(name: key, value: normalize(value: v)))
+                            }
+                            return;
+                        }
+                        let subItems = mapValuesToQueryItems(subdict);
+                        subItems?.forEach({ qi in
+                            guard let v = qi.value else { return }
+                            result.append(URLQueryItem(name: "\(key)[\(qi.name)]", value: normalize(value: v)))
+                        })
+                    }
+            } else {
+                if let v = item.value {
+                    result.append(URLQueryItem(name: item.key, value: normalize(value: v)))
+                }
             }
         }
-
         if destination.isEmpty {
             return nil
         }
         return destination
     }
 }
+
+func normalize(value: Any) -> String {
+    if let v = value as? NSNumber {
+        // it turned out, after JSONSerialization all boolean values convert into integers 1/0
+        if v === kCFBooleanTrue {
+            return "true"
+        }
+        if v === kCFBooleanFalse {
+            return "false"
+        }
+    }
+    return String(describing: value)
+}
+
 

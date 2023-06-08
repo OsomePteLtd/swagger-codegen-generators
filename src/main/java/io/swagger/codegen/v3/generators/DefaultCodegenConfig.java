@@ -2232,6 +2232,20 @@ public abstract class DefaultCodegenConfig implements CodegenConfig {
                     operationParameters.parseNestedObjects(param.getName(), param.getSchema(), imports, this, openAPI);
                     continue;
                 }
+                
+                if ("query".equalsIgnoreCase(param.getIn()) && param.getName().equals("...")) {
+                    Pattern p = Pattern.compile("^Schema: \\[\\`([a-zA-Z0-9]+)\\`\\]");
+                    Matcher m = p.matcher(param.getDescription());
+                    if (m.find()) {
+                        String schemaName = m.group(1);
+                        Schema schema = OpenAPIUtil.getSchemaFromName(schemaName, openAPI);
+                        if (schema == null) {
+                            LOGGER.warn("Unknown query schema: " + schemaName);
+                        }
+                        operationParameters.parseNestedObjects(param.getName(), schema, imports, this, openAPI);
+                        continue;
+                    }
+                }
                 CodegenParameter codegenParameter = fromParameter(param, imports);
                 operationParameters.addParameters(param, codegenParameter);
             }

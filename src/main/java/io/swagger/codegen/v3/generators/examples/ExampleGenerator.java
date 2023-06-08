@@ -158,7 +158,18 @@ public class ExampleGenerator {
 
     private Object resolveSchemaToExample(String propertyName, String mediaType, Schema schema, Set<String> processedModels) {
         if (processedModels.contains(schema.get$ref())) {
-            return schema.getExample();
+            if (schema.getExample() == null) {
+                String simpleName = OpenAPIUtil.getSimpleRef(schema.get$ref());
+                Schema model = null;
+                if (openAPI != null && openAPI.getComponents() != null && openAPI.getComponents().getSchemas() != null) {
+                    model = openAPI.getComponents().getSchemas().get(simpleName);
+                }
+                if (model.getType() != "string") {
+                    return model.getExample();    
+                }
+            } else {
+                return schema.getExample();
+            }
         }
         if (StringUtils.isNotBlank(schema.get$ref())) {
             processedModels.add(schema.get$ref());

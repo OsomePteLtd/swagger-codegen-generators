@@ -170,11 +170,14 @@ public class OperationParameters {
             }
             final String parameterName;
             if (property instanceof ArraySchema) {
-                parameterName = String.format("%s[%s][]", name, key);
+                parameterName = name.equals("...") ? String.format("%s[]", key) : String.format("%s[%s][]", name, key);    
             } else {
-                parameterName = String.format("%s[%s]", name, key);
+                parameterName = name.equals("...") ? key : String.format("%s[%s]", name, key);
             }
             if (isObjectWithProperties(property)) {
+                if (required != true) {
+                    property.setRequired(new ArrayList<>());
+                }
                 parseNestedObjects(parameterName, property, imports, codegenConfig, openAPI);
                 continue;
             }

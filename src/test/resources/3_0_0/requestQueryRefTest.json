@@ -1,0 +1,111 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Osome API",
+    "version": "2.1886.0"
+  },
+  "host": "{{host}}",
+  "basePath": "/api/v2",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/corpsec/industries": {
+      "get": {
+        "summary": "GET /corpsec/industries",
+        "description": "GET /corpsec/industries",
+        "operationId": "get--corpsec--industries",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CoIndustryResponse"
+            }
+          }
+        },
+        "tags": [
+          "corpsec"
+        ],
+        "parameters": [
+          {
+            "name": "...",
+            "type": "string",
+            "description": "Schema: [`CoIndustryIndexRequestQuery`](#_coindustryindexrequestquery) (stringified)",
+            "in": "query",
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "corpsec"
+    }
+  ],
+  "definitions": {
+    "AcDocumentStatus": {
+      "enum": [
+        "approved",
+        "paid",
+        "draft"
+      ],
+      "type": "string"
+    },
+    "CoIndustryIndexRequestQuery": {
+      "type": "object",
+      "properties": {
+        "companyId": {
+          "type": "integer"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "filter": {
+          "type": "object",
+          "properties": {
+            "search": {
+              "type": "string"
+            },
+            "statuses": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AcDocumentStatus"
+              }
+            },
+            "createdAfter": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "createdBefore": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "required": [
+            "search"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "companyId"
+      ]
+    },
+    "CoIndustryResponse": {
+      "type": "object",
+      "properties": {
+        "search": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

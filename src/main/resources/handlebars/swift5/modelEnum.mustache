@@ -1,4 +1,6 @@
-public enum {{classname}}: {{dataType}}, Codable {
+public enum {{classname}}: {{dataType}}, Codable, CaseIterableDefaultsLast {
 {{#allowableValues}}{{#enumVars}}    case {{name}} = "{{{value}}}"
 {{/enumVars}}{{/allowableValues}}
+    /// non-existing / unparsed case
+    case _unknown = "_unknown"
 }

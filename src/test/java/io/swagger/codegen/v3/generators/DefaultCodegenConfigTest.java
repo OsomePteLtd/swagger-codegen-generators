@@ -193,6 +193,47 @@ public class DefaultCodegenConfigTest {
         Assert.assertEquals(codegenOp.consumes.get(1).get("mediaType"), "application/xml");
     }
 
+    @Test
+    public void testRequestQueryStructuredParams() {
+        final OpenAPI openAPI = new OpenAPIV3Parser().read("src/test/resources/3_0_0/requestQueryRefTest.json");
+        final P_DefaultCodegenConfig codegen = new P_DefaultCodegenConfig();
+        final String path = "/corpsec/industries";
+        final Operation op = openAPI.getPaths().get(path).getGet();
+
+        final CodegenOperation codegenOp = codegen.fromOperation(path, "get", op, openAPI.getComponents().getSchemas(),
+                openAPI);
+        
+        Assert.assertEquals(codegenOp.summary, "GET /corpsec/industries");
+        
+        Assert.assertEquals(codegenOp.getQueryParams().get(0).paramName, "companyId");
+        Assert.assertEquals(codegenOp.getQueryParams().get(0).dataType, "Integer");
+        Assert.assertEquals(codegenOp.getQueryParams().get(0).required, true);
+        
+        Assert.assertEquals(codegenOp.getQueryParams().get(1).paramName, "branch");
+        Assert.assertEquals(codegenOp.getQueryParams().get(1).dataType, "String");
+        Assert.assertEquals(codegenOp.getQueryParams().get(1).required, false);
+        
+        Assert.assertEquals(codegenOp.getQueryParams().get(2).paramName, "filter[search]");
+        Assert.assertEquals(codegenOp.getQueryParams().get(2).dataType, "String");
+        Assert.assertEquals(codegenOp.getQueryParams().get(2).required, false);
+
+        Assert.assertEquals(codegenOp.getQueryParams().get(3).paramName, "filter[statuses][]");
+        Assert.assertEquals(codegenOp.getQueryParams().get(3).dataType, "List");
+        Assert.assertEquals(codegenOp.getQueryParams().get(3).baseType, "AcDocumentStatus");
+        Assert.assertEquals(codegenOp.getQueryParams().get(3).required, false);
+
+        Assert.assertEquals(codegenOp.getQueryParams().get(4).paramName, "filter[createdAfter]");
+        Assert.assertEquals(codegenOp.getQueryParams().get(4).dataType, "Date");
+        Assert.assertEquals(codegenOp.getQueryParams().get(4).dataFormat, "date-time");
+        Assert.assertEquals(codegenOp.getQueryParams().get(4).required, false);
+
+        Assert.assertEquals(codegenOp.getQueryParams().get(5).paramName, "filter[createdBefore]");
+        Assert.assertEquals(codegenOp.getQueryParams().get(5).dataType, "date");
+        Assert.assertEquals(codegenOp.getQueryParams().get(5).dataFormat, "date");
+
+    }
+
+
     /**
      * Tests when a 'application/x-www-form-urlencoded' request body is marked as required that all form
      * params are also marked as required.
